@@ -13,13 +13,21 @@ frontend/*.tsbuildinfo
 # IDE / editor
 .idea/
 *.iml
+*.iws
+*.ipr
 .vscode/
+.classpath
+.project
+.settings/
 *.swp
 *.swo
 
 # Environment
 .env.local
-frontend/.env.local
+frontend/.env*.local
+
+# Logs
+*.log
 
 # OS
 .DS_Store
