@@ -24,7 +24,7 @@ public class Interview {
 
     private LocalDateTime scheduledAt;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "interview_interviewers", joinColumns = @JoinColumn(name = "interview_id"))
     @Column(name = "name", nullable = false)
     private List<String> interviewerNames = new ArrayList<>();

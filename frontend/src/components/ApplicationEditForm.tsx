@@ -101,6 +101,15 @@ export default function ApplicationEditForm({ form, error, onField, onSubmit }: 
             onChange={(e) => onField('description', e.target.value)}
           />
         </div>
+        <div className="col-md-6">
+          <label className="form-label">Applicant Name</label>
+          <input
+            className="form-control"
+            placeholder="e.g. Jane Smith"
+            value={form.applicantName ?? ''}
+            onChange={(e) => onField('applicantName', e.target.value)}
+          />
+        </div>
       </div>
       <button className="btn btn-primary mt-3" type="submit">
         Save Changes

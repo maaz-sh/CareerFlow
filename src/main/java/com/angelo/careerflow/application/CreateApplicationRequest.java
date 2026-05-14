@@ -14,6 +14,7 @@ public record CreateApplicationRequest(
         WorkplaceType workplaceType,
         String salaryRange,
         @URL String jobPostingUrl,
-        String description
+        String description,
+        String applicantName
 ) {
 }

@@ -47,6 +47,8 @@ public class JobApplication {
     @Column(length = 3000)
     private String description;
 
+    private String applicantName;
+
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 
@@ -75,7 +77,8 @@ public class JobApplication {
             WorkplaceType workplaceType,
             String salaryRange,
             String jobPostingUrl,
-            String description
+            String description,
+            String applicantName
     ) {
         this.user = user;
         this.company = company;
@@ -87,6 +90,7 @@ public class JobApplication {
         this.salaryRange = salaryRange;
         this.jobPostingUrl = jobPostingUrl;
         this.description = description;
+        this.applicantName = applicantName;
     }
 
     public void update(
@@ -98,7 +102,8 @@ public class JobApplication {
             WorkplaceType workplaceType,
             String salaryRange,
             String jobPostingUrl,
-            String description
+            String description,
+            String applicantName
     ) {
         this.company = company;
         this.roleTitle = roleTitle;
@@ -109,6 +114,7 @@ public class JobApplication {
         this.salaryRange = salaryRange;
         this.jobPostingUrl = jobPostingUrl;
         this.description = description;
+        this.applicantName = applicantName;
         this.updatedAt = Instant.now();
     }
 
@@ -154,6 +160,10 @@ public class JobApplication {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getApplicantName() {
+        return applicantName;
     }
 
     public Instant getCreatedAt() {

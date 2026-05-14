@@ -30,6 +30,7 @@ const EMPTY_FORM = {
   salaryRange: '',
   jobPostingUrl: '',
   description: '',
+  applicantName: '',
 };
 
 export default function DashboardPage() {
@@ -109,6 +110,27 @@ export default function DashboardPage() {
     loadApplications();
   }
 
+  async function handleStatusChange(app: JobApplication, newStatus: ApplicationStatus) {
+    try {
+      await client.put(`/applications/${app.id}`, {
+        company: app.company,
+        roleTitle: app.roleTitle,
+        status: newStatus,
+        appliedDate: app.appliedDate,
+        location: app.location,
+        workplaceType: app.workplaceType,
+        salaryRange: app.salaryRange,
+        jobPostingUrl: app.jobPostingUrl,
+        description: app.description,
+        applicantName: app.applicantName,
+      });
+      loadApplications();
+    } catch {
+      // silently re-load; user will see the original status restored
+      loadApplications();
+    }
+  }
+
   function field(key: keyof typeof form, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
   }
@@ -171,6 +193,10 @@ export default function DashboardPage() {
                   <label className="form-label">Description / Notes</label>
                   <textarea className="form-control" rows={2} value={form.description} onChange={(e) => field('description', e.target.value)} />
                 </div>
+                <div className="col-md-6">
+                  <label className="form-label">Applicant Name</label>
+                  <input className="form-control" placeholder="e.g. Jane Smith" value={form.applicantName} onChange={(e) => field('applicantName', e.target.value)} />
+                </div>
               </div>
               <button className="btn btn-success mt-3" type="submit" disabled={submitting}>
                 {submitting ? 'Saving…' : 'Save Application'}
@@ -214,6 +240,7 @@ export default function DashboardPage() {
             <table className="table table-hover align-middle">
               <thead className="table-dark">
                 <tr>
+                  <th>Applicant</th>
                   <th>Company</th>
                   <th>Role</th>
                   <th>Status</th>
@@ -226,12 +253,20 @@ export default function DashboardPage() {
               <tbody>
                 {page.content.map((app) => (
                   <tr key={app.id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/applications/${app.id}`)}>
+                    <td>{app.applicantName ?? '—'}</td>
                     <td className="fw-semibold">{app.company}</td>
                     <td>{app.roleTitle}</td>
-                    <td>
-                      <span className={`badge bg-${STATUS_BADGE[app.status]}`}>
-                        {app.status.replace(/_/g, ' ')}
-                      </span>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <select
+                        className={`form-select form-select-sm border-0 bg-transparent fw-semibold text-${STATUS_BADGE[app.status]}`}
+                        value={app.status}
+                        onChange={(e) => handleStatusChange(app, e.target.value as ApplicationStatus)}
+                        style={{ minWidth: 160 }}
+                      >
+                        {STATUSES.map((s) => (
+                          <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
+                        ))}
+                      </select>
                     </td>
                     <td>{app.appliedDate}</td>
                     <td>{app.workplaceType?.replace(/_/g, ' ') ?? '—'}</td>

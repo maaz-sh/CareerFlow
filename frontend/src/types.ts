@@ -20,6 +20,7 @@ export interface JobApplication {
   salaryRange?: string;
   jobPostingUrl?: string;
   description?: string;
+  applicantName?: string;
   createdAt: string;
   updatedAt: string;
 }

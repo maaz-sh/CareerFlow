@@ -72,7 +72,8 @@ public class JobApplicationService {
                 request.workplaceType(),
                 request.salaryRange(),
                 request.jobPostingUrl(),
-                request.description()
+                request.description(),
+                request.applicantName()
         );
 
         return JobApplicationResponse.from(applicationRepository.save(application));
@@ -108,7 +109,8 @@ public class JobApplicationService {
                 request.workplaceType(),
                 request.salaryRange(),
                 request.jobPostingUrl(),
-                request.description()
+                request.description(),
+                request.applicantName()
         );
 
         return JobApplicationResponse.from(applicationRepository.save(application));

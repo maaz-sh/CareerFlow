@@ -37,7 +37,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        String ip = request.getRemoteAddr();
+        String forwarded = request.getHeader("X-Forwarded-For");
+        String ip = (forwarded != null && !forwarded.isBlank())
+                ? forwarded.split(",")[0].trim()
+                : request.getRemoteAddr();
         Bucket bucket = buckets.computeIfAbsent(ip, k -> newBucket());
 
         if (bucket.tryConsume(1)) {

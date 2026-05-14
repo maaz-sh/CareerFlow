@@ -1,11 +1,16 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import client from '../api/client';
-import type { JobApplication } from '../types';
+import type { JobApplication, ApplicationStatus } from '../types';
 import ApplicationEditForm from '../components/ApplicationEditForm';
 import InterviewsTab from '../components/InterviewsTab';
 import ContactsTab from '../components/ContactsTab';
 import NotesTab from '../components/NotesTab';
+
+const STATUSES: ApplicationStatus[] = [
+  'APPLIED', 'RECRUITER_SCREEN', 'TECHNICAL_INTERVIEW', 'FINAL_INTERVIEW',
+  'OFFER', 'REJECTED', 'WITHDRAWN',
+];
 
 type Tab = 'interviews' | 'contacts' | 'notes';
 
@@ -78,6 +83,29 @@ export default function ApplicationDetailPage() {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
+  async function handleStatusChange(newStatus: ApplicationStatus) {
+    if (!app) return;
+    try {
+      const { data } = await client.put<JobApplication>(`/applications/${id}`, {
+        company: app.company,
+        roleTitle: app.roleTitle,
+        status: newStatus,
+        appliedDate: app.appliedDate,
+        location: app.location,
+        workplaceType: app.workplaceType,
+        salaryRange: app.salaryRange,
+        jobPostingUrl: app.jobPostingUrl,
+        description: app.description,
+        applicantName: app.applicantName,
+      });
+      setApp(data);
+      setForm(data);
+    } catch {
+      // re-load to restore accurate state on failure
+      loadApp();
+    }
+  }
+
   if (loadError)
     return (
       <div className="container my-4">
@@ -123,7 +151,17 @@ export default function ApplicationDetailPage() {
           ) : (
             <dl className="row mb-0">
               <dt className="col-sm-3">Status</dt>
-              <dd className="col-sm-9">{app.status.replace(/_/g, ' ')}</dd>
+              <dd className="col-sm-9">
+                <select
+                  className="form-select form-select-sm w-auto"
+                  value={app.status}
+                  onChange={(e) => handleStatusChange(e.target.value as ApplicationStatus)}
+                >
+                  {STATUSES.map((s) => (
+                    <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
+                  ))}
+                </select>
+              </dd>
               <dt className="col-sm-3">Applied</dt>
               <dd className="col-sm-9">{app.appliedDate}</dd>
               <dt className="col-sm-3">Location</dt>
@@ -132,6 +170,8 @@ export default function ApplicationDetailPage() {
               <dd className="col-sm-9">{app.workplaceType?.replace(/_/g, ' ') ?? '—'}</dd>
               <dt className="col-sm-3">Salary</dt>
               <dd className="col-sm-9">{app.salaryRange ?? '—'}</dd>
+              <dt className="col-sm-3">Applicant</dt>
+              <dd className="col-sm-9">{app.applicantName ?? '—'}</dd>
               {app.jobPostingUrl && (
                 <>
                   <dt className="col-sm-3">Posting</dt>

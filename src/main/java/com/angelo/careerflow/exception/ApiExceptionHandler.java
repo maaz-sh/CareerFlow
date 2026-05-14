@@ -1,6 +1,9 @@
 package com.angelo.careerflow.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +35,20 @@ public class ApiExceptionHandler {
                 "status", 400,
                 "error", "Bad Request",
                 "message", exception.getMessage()
+        );
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler({BadCredentialsException.class, LockedException.class, DisabledException.class})
+    public Map<String, Object> handleAuthFailure(Exception exception) {
+        String message = exception instanceof BadCredentialsException
+                ? "Invalid email or password."
+                : exception.getMessage();
+        return Map.of(
+                "timestamp", Instant.now(),
+                "status", 401,
+                "error", "Unauthorized",
+                "message", message
         );
     }
 }

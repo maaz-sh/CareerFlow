@@ -14,6 +14,7 @@ public record JobApplicationResponse(
         String salaryRange,
         String jobPostingUrl,
         String description,
+        String applicantName,
         Instant createdAt,
         Instant updatedAt
 ) {
@@ -29,6 +30,7 @@ public record JobApplicationResponse(
                 application.getSalaryRange(),
                 application.getJobPostingUrl(),
                 application.getDescription(),
+                application.getApplicantName(),
                 application.getCreatedAt(),
                 application.getUpdatedAt()
         );
