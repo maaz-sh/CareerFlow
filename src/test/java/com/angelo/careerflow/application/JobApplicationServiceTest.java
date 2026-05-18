@@ -50,7 +50,8 @@ class JobApplicationServiceTest {
                 WorkplaceType.HYBRID,
                 "$95k-$130k",
                 "https://careers.walmart.com/example",
-                "Backend Java role"
+                "Backend Java role",
+                null
         );
 
         JobApplicationResponse response = service.createApplication(request);
